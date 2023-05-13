@@ -1,5 +1,6 @@
-import { OnRpcRequestHandler } from '@metamask/snaps-types';
+import { Json, OnRpcRequestHandler } from '@metamask/snaps-types';
 import { divider, spinner, copyable, panel, text } from '@metamask/snaps-ui';
+import axios from 'axios';
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
@@ -12,14 +13,35 @@ import { divider, spinner, copyable, panel, text } from '@metamask/snaps-ui';
  * @throws If the request method is not valid for this snap.
  */
 
-export const onRpcRequest: OnRpcRequestHandler = ({
+const handleEverynameApi = async (
+  address: Json[] | Record<string, Json>,
+  network: number,
+) => {
+  const apiUrl = `https://api.everyname.xyz/reverse?address=${address}&network=${network}`;
+
+  axios
+    .get(apiUrl, {
+      headers: {
+        'api-key': `${process.env.EVERYNAME_API_KEY}`,
+      },
+    })
+    .then((response) => {
+      const data = response.data;
+      if (data.domain) {
+        return data.domain;
+      }
+      return 'no domain associated with name';
+    })
+    .catch((error) => {
+      // Handle any errors
+      console.error('Error:', error);
+    });
+};
+
+export const onRpcRequest: OnRpcRequestHandler = async ({
   origin,
   request,
-}: {
-  origin: string;
-  request: string;
 }) => {
-  console.log(request);
   switch (request.method) {
     case 'hello':
       return snap.request({
@@ -36,6 +58,9 @@ export const onRpcRequest: OnRpcRequestHandler = ({
         },
       });
     case 'address':
+      // const res = await handleEverynameApi(request.params, 1);
+      // console.log(res, 'wats res')
+
       return snap.request({
         method: 'snap_dialog',
         params: {

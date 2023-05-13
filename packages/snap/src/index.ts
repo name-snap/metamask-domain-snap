@@ -1,5 +1,5 @@
 import { OnRpcRequestHandler } from '@metamask/snaps-types';
-import { panel, text } from '@metamask/snaps-ui';
+import { divider, spinner, copyable, panel, text } from '@metamask/snaps-ui';
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
@@ -27,7 +27,12 @@ export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
           ]),
         },
       });
+    case 'test':
+      return snap.request({
+        method: ''
     default:
       throw new Error('Method not found.');
   }
 };
+
+

@@ -103,18 +103,5 @@ export const Toggle = ({
     setChecked(!checked);
   };
 
-  return (
-    <ToggleWrapper onClick={handleChange}>
-      <ToggleContainer>
-        <CheckedContainer checked={checked}>
-          <span>🌞</span>
-        </CheckedContainer>
-        <UncheckedContainer checked={checked}>
-          <span>🌜</span>
-        </UncheckedContainer>
-      </ToggleContainer>
-      <ToggleCircle checked={checked} />
-      <ToggleInput type="checkbox" aria-label="Toggle Button" />
-    </ToggleWrapper>
-  );
+  return <></>;
 };

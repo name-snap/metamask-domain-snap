@@ -143,12 +143,23 @@ const Index = () => {
 
   return (
     <Container>
-      <Heading>
-        Welcome to <Span>template-snap</Span>
+      <Heading style={{ display: 'flex', flexDirection: 'row' }}>
+        Welcome to{' '}
+        <div style={{ marginLeft: 12, color: '#e43737' }}>name-snap</div>
       </Heading>
-      <Subtitle>
-        Get started by editing <code>src/index.ts</code>
-      </Subtitle>
+
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <Subtitle style={{ marginRight: 10 }}>Powered by</Subtitle>
+        <a href="www.everyname.xyz" target="_blank">
+          <img
+            width="160"
+            loading="lazy"
+            src="https://uploads-ssl.webflow.com/64204d41a2bd1e495749eb46/6434550aab4f8743745b859c_everyname_docs_logo.svg"
+            alt="Everyname's logomark and wordmark"
+          />
+        </a>
+      </div>
+
       <CardContainer>
         {state.error && (
           <ErrorMessage>

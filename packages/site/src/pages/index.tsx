@@ -1,10 +1,11 @@
-import { useContext } from 'react';
+import React, { useContext, useState, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
 import {
   connectSnap,
   getSnap,
   sendHello,
+  sendAddress,
   shouldDisplayReconnectButton,
 } from '../utils';
 import {
@@ -101,6 +102,7 @@ const ErrorMessage = styled.div`
 
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
+  const [address, setAddress] = useState('');
 
   const handleConnectClick = async () => {
     try {
@@ -120,6 +122,19 @@ const Index = () => {
   const handleSendHelloClick = async () => {
     try {
       await sendHello();
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setAddress(e.target.value);
+  };
+
+  const handleSendInputClick = async () => {
+    try {
+      await sendAddress(address);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -213,6 +228,33 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
+        <Card
+          content={{
+            title: 'Input your address',
+            description:
+              'Please enter your hexadecimal address that will forward resolve for a domain',
+            button: (
+              <div>
+                <input
+                  type="text"
+                  value={address}
+                  onChange={handleInputChange}
+                />
+                <SendHelloButton
+                  onClick={handleSendInputClick}
+                  disabled={!state.installedSnap}
+                />
+              </div>
+            ),
+          }}
+          disabled={!state.installedSnap}
+          fullWidth={
+            state.isFlask &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
+
         <Notice>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}

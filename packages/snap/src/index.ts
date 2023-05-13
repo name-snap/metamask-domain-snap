@@ -11,7 +11,9 @@ import { divider, spinner, copyable, panel, text } from '@metamask/snaps-ui';
  * @returns The result of `snap_dialog`.
  * @throws If the request method is not valid for this snap.
  */
+
 export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
+  console.log(request)
   switch (request.method) {
     case 'hello':
       return snap.request({
@@ -27,12 +29,18 @@ export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
           ]),
         },
       });
-    case 'test':
-      return snap.request({
-        method: ''
+    case 'address':
+    return snap.request({
+      method: 'snap_dialog',
+      params: {
+        type: 'confirmation',
+        content: panel([
+          text(`Hello, **${origin}**!`),
+          text(`Your address is ${request.params}`),
+        ]),
+      },
+    });
     default:
       throw new Error('Method not found.');
   }
 };
-
-

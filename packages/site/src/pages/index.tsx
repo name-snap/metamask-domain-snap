@@ -135,7 +135,6 @@ const Index = () => {
         await sendAddress(address);
       }
       if (reverse === 'socials') {
-        console.log(address)
         await sendSocials(address);
       }
       if (reverse === 'domain') {

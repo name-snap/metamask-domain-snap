@@ -48,6 +48,8 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "@airstack/airstack-react": "^0.2.1"
+    "@airstack/airstack-react": "^0.2.1",
+    "apollo-boost": "^0.4.9",
+    "graphql": "^16.6.0"
   }
 }

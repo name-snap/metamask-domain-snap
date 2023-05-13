@@ -1,7 +1,7 @@
 import { Json, OnRpcRequestHandler } from '@metamask/snaps-types';
 import { divider, spinner, copyable, panel, text } from '@metamask/snaps-ui';
 import { EVERYNAME_API_KEY } from './config';
-import { init, useQuery } from '@airstack/airstack-react';
+import { init, fetchQuery } from '@airstack/airstack-react';
 
 init('fcdd5ca07bd04f47b4b6ff59b662ca11');
 
@@ -29,38 +29,30 @@ const handleChainId = (chainId: number) => {
 
 const handleSocials = async (address: string) => {
   const GET_ALL_SOCIALS = `
-    query GetAllSocials($address: String!) {
-      Socials(
-        input: {
-          filter: { userAssociatedAddresses: { _eq: $address } }
-          blockchain: ethereum
-        }
-      ) {
-        Social {
-          blockchain
-          dappName
-          profileName
-          userAssociatedAddresses
-        }
+  query GetAllSocials($address: Address!) {
+    Socials(
+      input: {filter: {userAssociatedAddresses: {_eq: $address }}, 
+      blockchain: ethereum}
+    ) {
+      Social {
+        dappName
+        profileName
       }
     }
+  }
   `;
 
-  const { data, loading, error } = await useQuery(
+  const { data, error } = await fetchQuery(
     GET_ALL_SOCIALS,
     { address },
     { cache: false },
   );
 
-  // if (loading) {
-  //   return <p>Loading...</p>;
-  // }
+  if (error) {
+    return error;
+  }
 
-  // if (error) {
-  //   return <p>Error: {error.message}</p>;
-  // }
-
-  return data.data.Socials;
+  return data.Socials.Social;
 };
 
 const handleReverseResolutionApiRequest = async (
@@ -178,7 +170,16 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       });
     case 'socials':
       const result = await handleSocials(request.params);
-      return result;
+      return snap.request({
+        method: 'snap_dialog',
+        params: {
+          type: 'confirmation',
+          content: panel([
+            text(`Your socials:`),
+            copyable(JSON.stringify(result)),
+          ]),
+        },
+      });
     default:
       throw new Error('Method not found.');
   }

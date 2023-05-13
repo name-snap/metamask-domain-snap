@@ -66,6 +66,10 @@ export const sendHello = async () => {
  */
 
 export const sendAddress = async (address: string) => {
+  // const chainId = await window.ethereum.request({
+  //   method: 'eth_chainId',
+  // });
+
   await window.ethereum.request({
     method: 'wallet_invokeSnap',
     params: {

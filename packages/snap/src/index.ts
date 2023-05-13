@@ -98,26 +98,30 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
           type: 'confirmation',
           content: panel([
             text(`Hello, **${origin}**!`),
+            text(`Your HEX address is **${request.params}**`),
             text(
-              `Your address is ${JSON.stringify(res.domain)} AND  ${request.params
-              }`,
+              `Which resolves to the domain name **${JSON.stringify(
+                res.domain,
+              )}**`,
             ),
           ]),
         },
       });
     case 'domain':
-      const everynameResult = handleForwardResolutionApiRequest(request.params);
+      const everynameResult = await handleForwardResolutionApiRequest(
+        request.params,
+      );
       return snap.request({
         method: 'snap_dialog',
         params: {
           type: 'confirmation',
           content: panel([
             text(`Hello, **${origin}**!`),
-            text(`Your domain is ${request.params}`),
+            text(`Your domain name is **${request.params}**`),
             text(
-              `Which resolves to the hex address ${JSON.stringify(
-                everynameResult,
-              )}`,
+              `Which resolves to the hex address **${JSON.stringify(
+                everynameResult.address,
+              )}**`,
             ),
           ]),
         },

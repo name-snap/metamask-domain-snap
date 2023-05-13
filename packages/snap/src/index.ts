@@ -13,12 +13,22 @@ import { EVERYNAME_API_KEY } from './config';
  * @throws If the request method is not valid for this snap.
  */
 
+const handleChainId = (chainId: number) => {
+  switch (chainId) {
+    case 1:
+      return 'eth';
+    case 56:
+      return 'bnb';
+    case 43114:
+      return 'avax';
+  }
+};
+
 const handleReverseResolutionApiRequest = async (
   address: string,
   network: string,
 ) => {
   const apiKey = EVERYNAME_API_KEY;
-  network = 'eth';
   const requestOptions = {
     method: 'GET',
     headers: {
@@ -86,11 +96,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
         },
       });
     case 'address':
+      const [address, chainId] = request.params;
+      const stringChainId = handleChainId(Number(chainId));
       const res = await handleReverseResolutionApiRequest(
-        request.params,
-        'eth',
+        address,
+        stringChainId,
       );
-      console.log(res, 'öööööööööööö');
 
       return snap.request({
         method: 'snap_dialog',
@@ -98,7 +109,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
           type: 'confirmation',
           content: panel([
             text(`Hello, **${origin}**!`),
-            text(`Your HEX address is **${request.params}**`),
+            text(`Your HEX address is **${address}**`),
             text(
               `Which resolves to the domain name **${JSON.stringify(
                 res.domain,

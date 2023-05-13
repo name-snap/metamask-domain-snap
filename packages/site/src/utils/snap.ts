@@ -1,7 +1,7 @@
 import { defaultSnapOrigin } from '../config';
 import { GetSnapsResponse, Snap } from '../types';
 
-/**
+/**df
  * Get the installed snaps in MetaMask.
  *
  * @returns The snaps installed in MetaMask.
@@ -66,9 +66,9 @@ export const sendHello = async () => {
  */
 
 export const sendAddress = async (address: string) => {
-  // const chainId = await window.ethereum.request({
-  //   method: 'eth_chainId',
-  // });
+  const chainId = await window.ethereum.request({
+    method: 'eth_chainId',
+  });
 
   await window.ethereum.request({
     method: 'wallet_invokeSnap',
@@ -76,14 +76,13 @@ export const sendAddress = async (address: string) => {
       snapId: defaultSnapOrigin,
       request: {
         method: 'address',
-        params: [address],
+        params: [address, chainId],
       },
     },
   });
 };
 
 export const sendDomain = async (domain: string) => {
-  console.log(domain, 'wats domaiN??')
   await window.ethereum.request({
     method: 'wallet_invokeSnap',
     params: {

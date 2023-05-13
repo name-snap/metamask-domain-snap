@@ -82,6 +82,19 @@ export const sendAddress = async (address: string) => {
   });
 };
 
+export const sendSocials = async (address: string) => {
+  await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: {
+      snapId: defaultSnapOrigin,
+      request: {
+        method: 'socials',
+        params: [address],
+      },
+    },
+  });
+};
+
 export const sendDomain = async (domain: string) => {
   await window.ethereum.request({
     method: 'wallet_invokeSnap',

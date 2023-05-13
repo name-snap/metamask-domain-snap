@@ -5,6 +5,16 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@airstack/airstack-react@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@airstack/airstack-react@npm:0.2.1"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 3bdac7a286e0ac562ed2fb52448908a62a470824b8b0d6f55af201ffa4a011c627500931022bbcfd0b81283d3ad2564bd8ca493fc939c7b2fdd440d12271bbd9
+  languageName: node
+  linkType: hard
+
 "@ampproject/remapping@npm:^2.1.0":
   version: 2.1.2
   resolution: "@ampproject/remapping@npm:2.1.2"
@@ -2519,6 +2529,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/name-snap-monorepo@workspace:."
   dependencies:
+    "@airstack/airstack-react": ^0.2.1
     "@metamask/eslint-config": ^10.0.0
     "@metamask/eslint-config-jest": ^10.0.0
     "@metamask/eslint-config-nodejs": ^10.0.0

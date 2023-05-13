@@ -1,6 +1,9 @@
 import { Json, OnRpcRequestHandler } from '@metamask/snaps-types';
 import { divider, spinner, copyable, panel, text } from '@metamask/snaps-ui';
 import { EVERYNAME_API_KEY } from './config';
+import { init, useQuery } from '@airstack/airstack-react';
+
+init('fcdd5ca07bd04f47b4b6ff59b662ca11');
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
@@ -22,6 +25,42 @@ const handleChainId = (chainId: number) => {
     case 43114:
       return 'avax';
   }
+};
+
+const handleSocials = async (address: string) => {
+  const GET_ALL_SOCIALS = `
+    query GetAllSocials($address: String!) {
+      Socials(
+        input: {
+          filter: { userAssociatedAddresses: { _eq: $address } }
+          blockchain: ethereum
+        }
+      ) {
+        Social {
+          blockchain
+          dappName
+          profileName
+          userAssociatedAddresses
+        }
+      }
+    }
+  `;
+
+  const { data, loading, error } = await useQuery(
+    GET_ALL_SOCIALS,
+    { address },
+    { cache: false },
+  );
+
+  // if (loading) {
+  //   return <p>Loading...</p>;
+  // }
+
+  // if (error) {
+  //   return <p>Error: {error.message}</p>;
+  // }
+
+  return data.data.Socials;
 };
 
 const handleReverseResolutionApiRequest = async (
@@ -137,6 +176,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
           ]),
         },
       });
+    case 'socials':
+      const result = await handleSocials(request.params);
+      return result;
     default:
       throw new Error('Method not found.');
   }

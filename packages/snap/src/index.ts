@@ -2,6 +2,9 @@
 import { Json, OnRpcRequestHandler } from '@metamask/snaps-types';
 import { divider, spinner, copyable, panel, text } from '@metamask/snaps-ui';
 import { EVERYNAME_API_KEY } from './config';
+import { init, fetchQuery } from '@airstack/airstack-react';
+
+init('fcdd5ca07bd04f47b4b6ff59b662ca11');
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
@@ -26,6 +29,34 @@ const handleChainId = (chainId: number) => {
     default:
       return 'eth';
   }
+};
+
+const handleSocials = async (address: string) => {
+  const GET_ALL_SOCIALS = `
+  query GetAllSocials($address: Address!) {
+    Socials(
+      input: {filter: {userAssociatedAddresses: {_eq: $address }}, 
+      blockchain: ethereum}
+    ) {
+      Social {
+        dappName
+        profileName
+      }
+    }
+  }
+  `;
+
+  const { data, error } = await fetchQuery(
+    GET_ALL_SOCIALS,
+    { address },
+    { cache: false },
+  );
+
+  if (error) {
+    return error;
+  }
+
+  return data.Socials.Social;
 };
 
 const handleReverseResolutionApiRequest = async (
@@ -139,6 +170,18 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
                 everynameResult.address,
               )}**`,
             ),
+          ]),
+        },
+      });
+    case 'socials':
+      const result = await handleSocials(request.params);
+      return snap.request({
+        method: 'snap_dialog',
+        params: {
+          type: 'confirmation',
+          content: panel([
+            text(`Your socials:`),
+            copyable(JSON.stringify(result)),
           ]),
         },
       });

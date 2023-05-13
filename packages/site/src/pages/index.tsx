@@ -4,8 +4,8 @@ import { MetamaskActions, MetaMaskContext } from '../hooks';
 import {
   connectSnap,
   getSnap,
-  sendHello,
   sendAddress,
+  sendSocials,
   shouldDisplayReconnectButton,
   sendDomain,
 } from '../utils';
@@ -14,6 +14,7 @@ import {
   InstallFlaskButton,
   ReconnectButton,
   SendHelloButton,
+  SendSocialsButton,
   Card,
 } from '../components';
 const Container = styled.div`
@@ -120,15 +121,6 @@ const Index = () => {
     }
   };
 
-  const handleSendHelloClick = async () => {
-    try {
-      await sendHello();
-    } catch (e) {
-      console.error(e);
-      dispatch({ type: MetamaskActions.SetError, payload: e });
-    }
-  };
-
   const handleReverseInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
   };
@@ -137,11 +129,15 @@ const Index = () => {
     setDomain(e.target.value);
   };
 
-  const handleSendInputClick = async (reverse: boolean) => {
+  const handleSendInputClick = async (reverse: string) => {
     try {
-      if (reverse) {
+      if (reverse === 'address') {
         await sendAddress(address);
-      } else {
+      }
+      if (reverse === 'socials') {
+        await sendSocials(address);
+      }
+      if (reverse === 'domain') {
         await sendDomain(domain);
       }
     } catch (e) {
@@ -252,7 +248,11 @@ const Index = () => {
                 />
 
                 <SendHelloButton
-                  onClick={() => handleSendInputClick(true)}
+                  onClick={() => handleSendInputClick('address')}
+                  disabled={!state.installedSnap}
+                />
+                <SendSocialsButton
+                  onClick={() => handleSendInputClick('socials')}
                   disabled={!state.installedSnap}
                 />
               </div>
@@ -297,7 +297,7 @@ const Index = () => {
                   }}
                 />
                 <SendHelloButton
-                  onClick={() => handleSendInputClick(false)}
+                  onClick={() => handleSendInputClick('domain')}
                   disabled={!state.installedSnap}
                 />
               </div>

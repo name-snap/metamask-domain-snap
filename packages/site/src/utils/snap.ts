@@ -78,4 +78,18 @@ export const sendAddress = async (address: string) => {
   });
 };
 
+export const sendDomain = async (domain: string) => {
+  console.log(domain, 'wats domaiN??')
+  await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: {
+      snapId: defaultSnapOrigin,
+      request: {
+        method: 'domain',
+        params: [domain],
+      },
+    },
+  });
+};
+
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');

@@ -7,6 +7,7 @@ import {
   sendHello,
   sendAddress,
   shouldDisplayReconnectButton,
+  sendDomain,
 } from '../utils';
 import {
   ConnectButton,
@@ -15,7 +16,6 @@ import {
   SendHelloButton,
   Card,
 } from '../components';
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -102,7 +102,8 @@ const ErrorMessage = styled.div`
 
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState<string>('');
+  const [domain, setDomain] = useState<string>('');
 
   const handleConnectClick = async () => {
     try {
@@ -128,13 +129,21 @@ const Index = () => {
     }
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleReverseInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
   };
 
-  const handleSendInputClick = async () => {
+  const handleForwardInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDomain(e.target.value);
+  };
+
+  const handleSendInputClick = async (reverse: boolean) => {
     try {
-      await sendAddress(address);
+      if (reverse) {
+        await sendAddress(address);
+      } else {
+        await sendDomain(domain);
+      }
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -232,16 +241,42 @@ const Index = () => {
           content={{
             title: 'Input your address',
             description:
-              'Please enter your hexadecimal address that will forward resolve for a domain',
+              'Please enter your hexadecimal address that will reverse resolve for a domain',
             button: (
               <div>
                 <input
                   type="text"
                   value={address}
-                  onChange={handleInputChange}
+                  onChange={handleReverseInputChange}
                 />
                 <SendHelloButton
-                  onClick={handleSendInputClick}
+                  onClick={() => handleSendInputClick(true)}
+                  disabled={!state.installedSnap}
+                />
+              </div>
+            ),
+          }}
+          disabled={!state.installedSnap}
+          fullWidth={
+            state.isFlask &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
+        <Card
+          content={{
+            title: 'Input your domain name',
+            description:
+              'Please enter your domain name that will forward resolve for a address',
+            button: (
+              <div>
+                <input
+                  type="text"
+                  value={domain}
+                  onChange={handleForwardInputChange}
+                />
+                <SendHelloButton
+                  onClick={() => handleSendInputClick(false)}
                   disabled={!state.installedSnap}
                 />
               </div>

@@ -12,8 +12,14 @@ import { divider, spinner, copyable, panel, text } from '@metamask/snaps-ui';
  * @throws If the request method is not valid for this snap.
  */
 
-export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
-  console.log(request)
+export const onRpcRequest: OnRpcRequestHandler = ({
+  origin,
+  request,
+}: {
+  origin: string;
+  request: string;
+}) => {
+  console.log(request);
   switch (request.method) {
     case 'hello':
       return snap.request({
@@ -30,16 +36,28 @@ export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
         },
       });
     case 'address':
-    return snap.request({
-      method: 'snap_dialog',
-      params: {
-        type: 'confirmation',
-        content: panel([
-          text(`Hello, **${origin}**!`),
-          text(`Your address is ${request.params}`),
-        ]),
-      },
-    });
+      return snap.request({
+        method: 'snap_dialog',
+        params: {
+          type: 'confirmation',
+          content: panel([
+            text(`Hello, **${origin}**!`),
+            text(`Your address is ${request.params}`),
+          ]),
+        },
+      });
+    case 'domain':
+      return snap.request({
+        method: 'snap_dialog',
+        params: {
+          type: 'confirmation',
+          content: panel([
+            text(`Hello, **${origin}**!`),
+            text(`Your domain is ${request.params}`),
+            text(`Which resolves to the hex address ${request.params}`),
+          ]),
+        },
+      });
     default:
       throw new Error('Method not found.');
   }

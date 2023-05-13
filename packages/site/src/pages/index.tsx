@@ -150,7 +150,7 @@ const Index = () => {
 
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <Subtitle style={{ marginRight: 10 }}>Powered by</Subtitle>
-        <a href="www.everyname.xyz" target="_blank">
+        <a href="https://www.everyname.xyz/" target="_blank">
           <img
             width="160"
             loading="lazy"

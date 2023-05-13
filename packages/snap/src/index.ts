@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { Json, OnRpcRequestHandler } from '@metamask/snaps-types';
 import { divider, spinner, copyable, panel, text } from '@metamask/snaps-ui';
 import { EVERYNAME_API_KEY } from './config';
@@ -16,11 +17,14 @@ import { EVERYNAME_API_KEY } from './config';
 const handleChainId = (chainId: number) => {
   switch (chainId) {
     case 1:
+    case 10:
       return 'eth';
     case 56:
       return 'bnb';
     case 43114:
       return 'avax';
+    default:
+      return 'eth';
   }
 };
 
@@ -97,6 +101,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       });
     case 'address':
       const [address, chainId] = request.params;
+      //const stringChainId = "eth";
       const stringChainId = handleChainId(Number(chainId));
       const res = await handleReverseResolutionApiRequest(
         address,

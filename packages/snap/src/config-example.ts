@@ -1,0 +1,2 @@
+export const EVERYNAME_API_KEY =
+    'your api key';

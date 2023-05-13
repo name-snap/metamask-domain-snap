@@ -1,6 +1,5 @@
 import { Json, OnRpcRequestHandler } from '@metamask/snaps-types';
 import { divider, spinner, copyable, panel, text } from '@metamask/snaps-ui';
-import axios from 'axios';
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
@@ -13,29 +12,29 @@ import axios from 'axios';
  * @throws If the request method is not valid for this snap.
  */
 
-const handleEverynameApi = async (
-  address: Json[] | Record<string, Json>,
-  network: number,
-) => {
-  const apiUrl = `https://api.everyname.xyz/reverse?address=${address}&network=${network}`;
+const handleEverynameApi = async (address: string, network: string) => {
+  const apiKey = process.env.EVERYNAME_API_KEY;
+  network = 'eth';
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'api-key': apiKey,
+    },
+  };
 
-  axios
-    .get(apiUrl, {
-      headers: {
-        'api-key': `${process.env.EVERYNAME_API_KEY}`,
-      },
-    })
-    .then((response) => {
-      const data = response.data;
-      if (data.domain) {
-        return data.domain;
-      }
-      return 'no domain associated with name';
-    })
-    .catch((error) => {
-      // Handle any errors
-      console.error('Error:', error);
-    });
+  try {
+    const response = await fetch(
+      `https://api.everyname.xyz/reverse?address=${address}&network=${network}`,
+      requestOptions,
+    );
+    const data = await response.json();
+    console.log(JSON.stringify(data));
+    return data;
+  } catch (error) {
+    console.error(error);
+    return { error: `ERROR OCCURRED ${error}` };
+  }
 };
 
 export const onRpcRequest: OnRpcRequestHandler = async ({
@@ -58,8 +57,8 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
         },
       });
     case 'address':
-      // const res = await handleEverynameApi(request.params, 1);
-      // console.log(res, 'wats res')
+      const res = await handleEverynameApi(request.params, 'eth');
+      console.log(res, 'öööööööööööö');
 
       return snap.request({
         method: 'snap_dialog',
@@ -67,7 +66,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
           type: 'confirmation',
           content: panel([
             text(`Hello, **${origin}**!`),
-            text(`Your address is ${request.params}`),
+            text(
+              `Your address is ${JSON.stringify(res.domain)} AND  ${request.params}`,
+            ),
           ]),
         },
       });

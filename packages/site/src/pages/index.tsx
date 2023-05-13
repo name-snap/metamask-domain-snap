@@ -169,6 +169,22 @@ const Index = () => {
         </a>
       </div>
 
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: 15,
+        }}
+      >
+        {shouldDisplayReconnectButton(state.installedSnap) && (
+          <ReconnectButton
+            onClick={handleConnectClick}
+            disabled={!state.installedSnap}
+          />
+        )}
+      </div>
+
       <CardContainer>
         {state.error && (
           <ErrorMessage>
@@ -202,41 +218,7 @@ const Index = () => {
             disabled={!state.isFlask}
           />
         )}
-        {shouldDisplayReconnectButton(state.installedSnap) && (
-          <Card
-            content={{
-              title: 'Reconnect',
-              description:
-                'While connected to a local running snap this button will always be displayed in order to update the snap if a change is made.',
-              button: (
-                <ReconnectButton
-                  onClick={handleConnectClick}
-                  disabled={!state.installedSnap}
-                />
-              ),
-            }}
-            disabled={!state.installedSnap}
-          />
-        )}
-        <Card
-          content={{
-            title: 'Send Hello message',
-            description:
-              'Display a custom message within a confirmation screen in MetaMask.',
-            button: (
-              <SendHelloButton
-                onClick={handleSendHelloClick}
-                disabled={!state.installedSnap}
-              />
-            ),
-          }}
-          disabled={!state.installedSnap}
-          fullWidth={
-            state.isFlask &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
+
         <Card
           content={{
             title: 'Input your address',
@@ -245,10 +227,30 @@ const Index = () => {
             button: (
               <div>
                 <input
+                  placeholder="Enter hex address.."
                   type="text"
                   value={address}
                   onChange={handleReverseInputChange}
+                  style={{
+                    backgroundColor: 'transparent',
+                    color: '#000000',
+                    fontStyle: 'normal',
+                    fontWeight: 400,
+                    fontSize: '15px',
+                    lineHeight: '18px',
+                    outline: 'none !important',
+                    outlineStyle: 'none',
+                    borderTop: 'none',
+                    borderLeft: 'none',
+                    borderRight: 'none',
+                    borderBottom: 'solid #000000 1px',
+                    padding: '3px',
+                    margin: '15px',
+                    width: '80%',
+                    paddingBottom: '10px',
+                  }}
                 />
+
                 <SendHelloButton
                   onClick={() => handleSendInputClick(true)}
                   disabled={!state.installedSnap}
@@ -267,13 +269,32 @@ const Index = () => {
           content={{
             title: 'Input your domain name',
             description:
-              'Please enter your domain name that will forward resolve for a address',
+              'Please enter your domain name that will forward resolve for an address',
             button: (
               <div>
                 <input
+                  placeholder="Enter domain name.."
                   type="text"
                   value={domain}
                   onChange={handleForwardInputChange}
+                  style={{
+                    backgroundColor: 'transparent',
+                    color: '#000000',
+                    fontStyle: 'normal',
+                    fontWeight: 400,
+                    fontSize: '15px',
+                    lineHeight: '18px',
+                    outline: 'none !important',
+                    outlineStyle: 'none',
+                    borderTop: 'none',
+                    borderLeft: 'none',
+                    borderRight: 'none',
+                    borderBottom: 'solid #000000 1px',
+                    padding: '3px',
+                    margin: '15px',
+                    width: '80%',
+                    paddingBottom: '10px',
+                  }}
                 />
                 <SendHelloButton
                   onClick={() => handleSendInputClick(false)}
@@ -292,10 +313,37 @@ const Index = () => {
 
         <Notice>
           <p>
-            Please note that the <b>snap.manifest.json</b> and{' '}
-            <b>package.json</b> must be located in the server root directory and
-            the bundle must be hosted at the location specified by the location
-            field.
+            Made by{' '}
+            <a
+              style={{
+                color: 'black',
+              }}
+              href="https://github.com/thomas779"
+              target="_blank"
+            >
+              {' '}
+              Thomas
+            </a>{' '}
+            &{' '}
+            <a
+              style={{
+                color: 'black',
+              }}
+              href="https://github.com/johannafransn"
+              target="_blank"
+            >
+              Johanna
+            </a>{' '}
+            @{' '}
+            <a
+              style={{
+                color: 'black',
+              }}
+              href="https://ethglobal.com/events/lisbon"
+              target="_blank"
+            >
+              ETHGlobal Lisbon 2023
+            </a>
           </p>
         </Notice>
       </CardContainer>
